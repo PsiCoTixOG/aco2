@@ -1,21 +1,15 @@
 //Acolyte^2 - Chatbot
 
-//BOTCode here
-
-/**
- * Example for creating and working with the Slack RTM API.
- */
-
-/* eslint no-console:0 */
-
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
-var token = process.env.SLACK_API_TOKEN || 'xoxb-61746542791-mjDNhGpaCsGWVj3Tt0zdarWA';
+var token = process.env.SLACK_API_TOKEN || '';
 
 var rtm = new RtmClient(token, { logLevel: 'debug' });
 rtm.start();
 
+//disabling conlose messages for now
+/*
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   console.log('Message:', message);
 });
@@ -27,6 +21,7 @@ rtm.on(RTM_EVENTS.REACTION_ADDED, function handleRtmReactionAdded(reaction) {
 rtm.on(RTM_EVENTS.REACTION_REMOVED, function handleRtmReactionRemoved(reaction) {
   console.log('Reaction removed:', reaction);
 });
+*/
 
 //
 //PsiCoTix - Left the chat server in as a 'local test' of the chat bot and as an admin interface
