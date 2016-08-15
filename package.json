@@ -1,14 +1,14 @@
 {
-  "name": "Acolyte^2",
+  "name": "acolyte2",
   "version": "0.0.0",
   "description": "A chatbot for Ingress",
   "main": "server.js",
   "repository": "",
   "author": "Mostafa Eweda <mo.eweda@gmail.com>",
   "dependencies": {
+    "@slack/client": "^3.5.4",
     "async": "~0.2.8",
     "express": "~3.2.4",
-    "socket.io": "~0.9.14",
-    "@slack/client":"~3.5.4"
+    "socket.io": "~0.9.14"
   }
 }
