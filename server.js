@@ -3,30 +3,52 @@
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+var S = require('string');
 
 var token = process.env.SLACK_API_TOKEN || '';
 
 var rtm = new RtmClient(token, { logLevel: 'debug' });
 rtm.start();
 
+var DEV_SLACK_CHANNEL = 'G0UQBBM5Y'
 
 //proof she's alive: make her talk
 
 // you need to wait for the client to fully connect before you can send messages
 rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () {
-  // This will send the message 'this is a test message' to the channel identified by id 'G0UQBBM5Y' ivie-tech
-  rtm.sendMessage('Hello Agents, I am here to help you', 'G0UQBBM5Y', function messageSent() {
+  // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
+  rtm.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() {
     // optionally, you can supply a callback to execute once the message has been sent
   });
 });
 
+// Slack RTM Message monitor - when it see's a command it will run the action
 
-//disabling conlose messages for now
-/*
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
+
+  //if first char is !
+  //get message text
+  var str_message = message.text;
+
+  var msgfirstchar = S(str_message).first;
+    
+    if (msgfirstchar = '!') {
+      rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function(){
+        rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent(){ 
+        });
+      });
+    }
+  rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function(){
+    rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent(){ 
+    });
+  });
   console.log('Message:', message);
 });
 
+
+
+//disabling conlose messages for now
+/*
 rtm.on(RTM_EVENTS.REACTION_ADDED, function handleRtmReactionAdded(reaction) {
   console.log('Reaction added:', reaction);
 });
