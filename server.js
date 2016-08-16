@@ -2,11 +2,24 @@
 
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 var token = process.env.SLACK_API_TOKEN || '';
 
 var rtm = new RtmClient(token, { logLevel: 'debug' });
 rtm.start();
+
+
+//proof she's alive: make her talk
+
+// you need to wait for the client to fully connect before you can send messages
+rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () {
+  // This will send the message 'this is a test message' to the channel identified by id 'G0UQBBM5Y' ivie-tech
+  rtm.sendMessage('Hello Agents, I am here to help you', 'G0UQBBM5Y', function messageSent() {
+    // optionally, you can supply a callback to execute once the message has been sent
+  });
+});
+
 
 //disabling conlose messages for now
 /*
