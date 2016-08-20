@@ -15,7 +15,7 @@ var token = process.env.SLACK_API_TOKEN || '';
 var rtm = new RtmClient(token,
   {
     //set loglevel
-    logLevel: 'DEV' /*'debug'*/,
+    logLevel: 'debug' /*'debug'*/,
     // Initialise a data store for our client, this will load additional helper functions for the storing and retrieval
     dataStore: new MemoryDataStore()
   });
@@ -24,6 +24,11 @@ var rtm = new RtmClient(token,
 var DEV_SLACK_CHANNEL = 'G0UQBBM5Y'
 
 rtm.start();
+//confirm start
+rtm.on(RTM_CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) 
+{
+  console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel`);
+});
 
 //proof she's alive: make her talk
 
