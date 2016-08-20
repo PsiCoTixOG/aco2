@@ -40,8 +40,7 @@ rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 // Slack RTM Message monitor - when it see's a command it will run the action
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
-  //if first char is !
-  //get message text
+  //if ! command is recived than - send to command translator (when that's actually done for now it sends to dev channel 
   console.log('Message Test',message.text);  
     if ( message.text === '!help') 
     {
