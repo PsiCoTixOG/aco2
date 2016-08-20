@@ -3,45 +3,52 @@
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+// The memory data store is a collection of useful functions we can include in our RtmClient
+var MemoryDataStore = require('@slack/client').MemoryDataStore;
+// useful string funtions
 var S = require('string');
 
+//sets slack token
 var token = process.env.SLACK_API_TOKEN || '';
 
-var rtm = new RtmClient(token, { logLevel: 'debug' });
-rtm.start();
 
+var rtm = new RtmClient(token,
+  {
+    //set loglevel
+    logLevel: 'DEV' /*'debug'*/,
+    // Initialise a data store for our client, this will load additional helper functions for the storing and retrieval
+    dataStore: new MemoryDataStore()
+  });
+
+//Global var
 var DEV_SLACK_CHANNEL = 'G0UQBBM5Y'
+
+rtm.start();
 
 //proof she's alive: make her talk
 
 // you need to wait for the client to fully connect before you can send messages
-rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () {
+rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () 
+{
   // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-  rtm.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() {
+  rtm.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() 
+  {
     // optionally, you can supply a callback to execute once the message has been sent
   });
 });
 
 // Slack RTM Message monitor - when it see's a command it will run the action
-
-rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
-
+rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
+{
   //if first char is !
   //get message text
-  var str_message = message.text;
-
-  var msgfirstchar = S(str_message).first;
-    
-    if (msgfirstchar = '!') {
-      rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function(){
-        rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent(){ 
+  console.log('Message Test',message.text);  
+    if ( message.text === '!help') 
+    {
+        rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent()
+        { 
         });
-      });
     }
-  rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function(){
-    rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent(){ 
-    });
-  });
   console.log('Message:', message);
 });
 
@@ -85,11 +92,11 @@ var server = http.createServer(router);
 var io = socketio.listen(server);
 
 router.use(express.static(path.resolve(__dirname, 'client')));
-var messages = [];
+var wsmessages = [];
 var sockets = [];
 
 io.on('connection', function (socket) {
-    messages.forEach(function (data) {
+    wsmessages.forEach(function (data) {
       socket.emit('message', data);
     });
 
@@ -113,7 +120,7 @@ io.on('connection', function (socket) {
         };
 
         broadcast('message', data);
-        messages.push(data);
+        wsmessages.push(data);
       });
     });
 
