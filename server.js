@@ -1,4 +1,4 @@
-//Acolyte^2 - Chatbot
+//Acolyte^2 - Chatbot - Slack Only so far
 
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
@@ -8,6 +8,9 @@ var MemoryDataStore = require('@slack/client').MemoryDataStore;
 // useful string funtions
 var S = require('string');
 
+//commands from json
+var commands = require('bin/config').commands;
+
 //sets slack token
 var token = process.env.SLACK_API_TOKEN || '';
 
@@ -15,7 +18,7 @@ var token = process.env.SLACK_API_TOKEN || '';
 var rtm = new RtmClient(token,
   {
     //set loglevel
-    logLevel: 'debug' /*'debug'*/,
+    logLevel: 'dev' /*'debug'*/,
     // Initialise a data store for our client, this will load additional helper functions for the storing and retrieval
     dataStore: new MemoryDataStore()
   });
@@ -25,7 +28,7 @@ var DEV_SLACK_CHANNEL = 'G0UQBBM5Y'
 
 rtm.start();
 //confirm start
-rtm.on(RTM_CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) 
+rtm.on(RTM_CLIENT_EVENTS.AUTHENTICATED, function (rtmStartData) 
 {
   console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel`);
 });
@@ -45,11 +48,9 @@ rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 // Slack RTM Message monitor - when it see's a command it will run the action
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
-  //if ! command is recived than - send to command translator (when that's actually done for now it sends to dev channel 
-  console.log('Message Test',message.text);  
-    if ( message.text === '!help') 
+     if ( message.text === commands.cmdname) 
     {
-        rtm.sendMessage('This will be a command response', DEV_SLACK_CHANNEL, function messageSent()
+        rtm.sendMessage(commands.cmdresponse, DEV_SLACK_CHANNEL, function messageSent()
         { 
         });
     }
