@@ -7,9 +7,10 @@ var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
 // useful string funtions
 var S = require('string');
+var fs = require("fs");
 
 //commands from json
-var commands = require('bin/config').commands;
+var commands = require('./bin/config/commands.json');
 
 //sets slack token
 var token = process.env.SLACK_API_TOKEN || '';
@@ -48,12 +49,19 @@ rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 // Slack RTM Message monitor - when it see's a command it will run the action
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
-     if ( message.text === commands.cmdname) 
+  //fill command array
+  commands.forEach(var cmdID in commands) 
+  {
+    console.log('DEV:' commands[cmdID].cmdname)
+    var cmdname = commands[cmdID].cmdname;
+ 
+    if ( message.text === cmdname) 
     {
         rtm.sendMessage(commands.cmdresponse, DEV_SLACK_CHANNEL, function messageSent()
         { 
         });
     }
+  }
   console.log('Message:', message);
 });
 
