@@ -26,7 +26,7 @@ var rtm = new RtmClient(token,
 
 
 //Global var
-var DEV_SLACK_CHANNEL = 'G0UQBBM5Y'
+var DEV_SLACK_CHANNEL = 'G0UQBBM5Y';
 
 rtm.start();
 
@@ -37,8 +37,7 @@ rtm.on(RTM_CLIENT_EVENTS.AUTHENTICATED, function (rtmStartData)
 });
 
 //proof she's alive: make her talk
-
-// you need to wait for the client to fully connect before you can send messages
+// Function Notes: you need to wait for the client to fully connect before you can send messages
 rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () 
 {
   // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
@@ -48,22 +47,25 @@ rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
   });
 });
 
+
+
+
 // Slack RTM Message monitor - when it see's a command it will run the action
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
-var channel_sent_from;
+  var channel_sent_from;
 
   
-if (message.text === '!help')
+  if (message.text === '!help')
+    {
+      channel_sent_from = message.channel;
+      // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
+      rtm.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
       {
-        channel_sent_from = message.channel
-          // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-          rtm.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
-          {
-          // optionally, you can supply a callback to execute once the message has been sent
-          });
-        
-      }
+      // optionally, you can supply a callback to execute once the message has been sent
+      });
+      
+    }
   console.log('Message:', message);
 });
 
