@@ -24,12 +24,16 @@ var rtm1 = new RtmClient(token1,
     //set loglevel
     logLevel: 'dev' /*'debug'*/,
     // Initialise a data store for our client, this will load additional helper functions for the storing and retrieval
-    dataStore: new MemoryDataStore()
+    dataStore1: new MemoryDataStore()
   });
 
 
 //Global var
+//IVIE Dev Channel 
 var DEV_SLACK_CHANNEL = 'G0UQBBM5Y';
+//CodeCollective Dev Channel
+var DEV_SLACK_CHANNEL = ''
+
 
 rtm1.start();
 
