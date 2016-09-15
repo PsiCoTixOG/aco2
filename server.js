@@ -9,14 +9,17 @@ var MemoryDataStore = require('@slack/client').MemoryDataStore;
 var S = require('string');
 var fs = require("fs");
 
-//commands from json
+//commands from json - currently unused - commands are currently inline
 var commands = require('./bin/config/commands.json');
 
-//sets slack token
-var token = process.env.SLACK_API_TOKEN || '';
+//sets slack tokens (multiple team support)
+var token1 = process.env.SLACK_API_TOKEN1 || '';
+var token2 = process.env.SLACK_API_TOKEN2 || '';
 
 
-var rtm = new RtmClient(token,
+
+//Client 1
+var rtm1 = new RtmClient(token1,
   {
     //set loglevel
     logLevel: 'dev' /*'debug'*/,
@@ -28,20 +31,20 @@ var rtm = new RtmClient(token,
 //Global var
 var DEV_SLACK_CHANNEL = 'G0UQBBM5Y';
 
-rtm.start();
+rtm1.start();
 
 //confirm start
-rtm.on(RTM_CLIENT_EVENTS.AUTHENTICATED, function (rtmStartData) 
+rtm1.on(RTM_CLIENT_EVENTS.AUTHENTICATED, function (rtmStartData) 
 {
   console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel`);
 });
 
 //proof she's alive: make her talk
 // Function Notes: you need to wait for the client to fully connect before you can send messages
-rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () 
+rtm1.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () 
 {
   // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-  rtm.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() 
+  rtm1.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() 
   {
     // optionally, you can supply a callback to execute once the message has been sent
   });
@@ -51,7 +54,7 @@ rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 
 
 // Slack RTM Message monitor - when it see's a command it will run the action
-rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
+rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
   var channel_sent_from;
 
@@ -60,7 +63,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     {
       channel_sent_from = message.channel;
       // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-      rtm.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
+      rtm1.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
       {
       // optionally, you can supply a callback to execute once the message has been sent
       });
