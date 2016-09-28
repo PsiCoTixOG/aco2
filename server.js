@@ -3,14 +3,25 @@
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+
+//Web-API
+var IncomingWebhooks = require('@slack/client').IncomingWebhook;
+// Anyone who has access to this url will be able to post your
+// slack org without authentication. So don't save this value in version control
+var url = process.env.SLACK_WEBHOOK_URL;
+
 // The memory data store is a collection of useful functions we can include in our RtmClient
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
 // useful string funtions
 var S = require('string');
 var fs = require("fs");
 
+//Configuration settings\files
+//var config = require('/bin/config/config.json');
+
 //commands from json - currently unused - commands are currently inline
-var commands = require('./bin/config/commands.json');
+//var help = require('./bin/commands.json');
+//var checkpoint = require('./bin/acocp.js');
 
 //sets slack tokens (multiple team support)
 var token1 = process.env.SLACK_API_TOKEN1 || '';
@@ -22,7 +33,7 @@ var token2 = process.env.SLACK_API_TOKEN2 || '';
 var rtm1 = new RtmClient(token1,
   {
     //set loglevel
-    logLevel: 'dev' /*'debug'*/,
+    logLevel: 'debug' /*'debug'*/,
     // Initialise a data store for our client, this will load additional helper functions for the storing and retrieval
     dataStore1: new MemoryDataStore()
   });
@@ -32,7 +43,7 @@ var rtm1 = new RtmClient(token1,
 //IVIE Dev Channel 
 var DEV_SLACK_CHANNEL = 'G0UQBBM5Y';
 //CodeCollective Dev Channel
-var DEV_SLACK_CHANNEL = ''
+var DEV_SLACK_CHANNEL2 = ''
 
 
 rtm1.start();
@@ -60,20 +71,47 @@ rtm1.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 // Slack RTM Message monitor - when it see's a command it will run the action
 rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
+  var checkpoint_response;
   var channel_sent_from;
-
+  var parsedmessage;
+  parsedmessage=S(message.text);
   
-  if (message.text === '!help')
-    {
-      channel_sent_from = message.channel;
-      // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-      rtm1.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
+//  if (parsedmessage.startsWith("!"))
+ // {
+    var msgcommand = parsedmessage.splitLeft(" ");
+    //msgcommand[0] = !command 
+    //msgcommand[1+] = command options
+    
+    //commands are currently inline
+    
+    //help command
+    if (msgcommand === '!help')
       {
-      // optionally, you can supply a callback to execute once the message has been sent
-      });
+        channel_sent_from = message.channel;
+        // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
+        rtm1.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
+        {
+        // optionally, you can supply a callback to execute once the message has been sent
+        });
       
-    }
-  console.log('Message:', message);
+      }
+    
+    
+    //checkpoint - NOT IMPLAMENTED
+    if (msgcommand[0] === '!cp')
+      {
+        channel_sent_from = message.channel;
+        //CP FUNCTION GOES HERE
+        checkpoint_response=' Not Yet Implamented - please try https://septicycl.es/';    //checkpoint(message);
+        //CP message sent to requested channel
+        rtm1.sendMessage('This was Sent from:' + channel_sent_from + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
+        {
+        // optionally, you can supply a callback to execute once the message has been sent
+        });
+  //    }
+  }
+  
+    console.log('Message:', message);
 });
 
 
