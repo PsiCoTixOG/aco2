@@ -29,7 +29,7 @@ var fs = require("fs");
 //var config = require('/bin/config/config.json');
 
 //commands from json - currently unused - commands are currently inline
-//var help = require('./bin/commands.json');
+var help = require('./bin/commands.json');
 //var checkpoint = require('./bin/acocp.js');
 
 //sets slack tokens (multiple team support - pending)
@@ -83,8 +83,7 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
 {
   var checkpoint_response;
   var channel_sent_from;
-  var parsedmessage;
-  parsedmessage=S(message.text);
+  var parsedmessage = S(message.text);
   
 //  if (parsedmessage.startsWith("!"))
  // {
@@ -95,11 +94,15 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     //commands are currently inline. Plan is to point them to commands.json
     
     //help command
+    if (msgcommand[0] === '!ping') {
+      channel_sent_from = message.channel;
+      rtm1.sendMessage('pong!', message.channel, function messageSent() {});
+    }
     if (msgcommand[0] === '!help')
       {
         channel_sent_from = message.channel;
         // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
-        rtm1.sendMessage('Type !help <command> to see more', DEV_SLACK_CHANNEL, function messageSent() 
+        rtm1.sendMessage('Type !help <command> to see more. (just kidding, this does nothing yet)', message.channel, function messageSent() 
         {
         // optionally, you can supply a callback to execute once the message has been sent
         });

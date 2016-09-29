@@ -29,6 +29,19 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+
+//--------IVIE DEV NOTES-------------------------------------------------------------//
+//takes message object
+//this should export the respons as a json object
+//we may want to use the webhooks to push this message instead of the real time api
+//
+//
+// !cp = next checkpoint + next 3(?)
+// !cp <Date(dd/mm/yy)> = checkpoints for that date
+// !cp <Date(dd/mm/yy)> <Time(hh:mm am||pm)> = next check point on date after time
+//
+//-----------------------------------------------------------------------------------//
+
 /* global module*/
 module.exports = function(message) 
 {
@@ -44,6 +57,7 @@ module.exports = function(message)
 	    {
 	  	'central': 'America/Chicago','eastern': 'America/New_York'
 	    };
+
 	var channel_sent_from;
 	//sets the channel the message was sent from
      channel_sent_from = message.channel;
@@ -57,7 +71,10 @@ module.exports = function(message)
 		// default time zone
 		timezone = DEFAULT_TIMEZONE;
 
-//I STOPPED HERE - NOTE FROM PSI - Moving to make DB etc
+//-------------IVIE NOTES --------------////
+//the message parsing needs to be reworked to handle the slack message object for us
+		var parsedmessage=S(message.text);
+		
 		// parse user-provided date
 		if (msg.match[3]) {
 			parsed = Date.parse(msg.match[3]);
@@ -65,6 +82,9 @@ module.exports = function(message)
 				msg.send('Invalid date');
 				return;
 			}
+			
+			
+			
 			t = new Date(parsed);
 		} else {
 			// if no parameter, use the current date
