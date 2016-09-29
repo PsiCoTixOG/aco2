@@ -1,0 +1,6 @@
+{ 
+    "slack_settings"[
+        {"PAID_SLACK": false, "DEV_SLACK_CHANNEL": "G0UQBBM5Y"}]
+    "other_settings"[
+        {"DEBUG": true}]    
+}

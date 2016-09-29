@@ -1,0 +1,14 @@
+{
+	"commands": {
+		"!help": {
+			"alias": ["!help"],
+			"help": "I am not much help currently",
+			"description": "Provides an overview of avalible commands"
+		},
+		"!checkpoint": {
+			"alias": ["!cp"],
+			"help": " ",
+			"description": "Shows next and future checkpoints."
+		}
+	}
+}

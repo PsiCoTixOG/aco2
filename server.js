@@ -1,8 +1,13 @@
 //Acolyte^2 - Chatbot - Slack Only so far
 
+
+//----------NODE MODULES---------------------------------//
+
+//Slack Real-Time Messaging 
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+
 
 //Web-API
 var IncomingWebhooks = require('@slack/client').IncomingWebhook;
@@ -10,24 +15,29 @@ var IncomingWebhooks = require('@slack/client').IncomingWebhook;
 // slack org without authentication. So don't save this value in version control
 var url = process.env.SLACK_WEBHOOK_URL;
 
+
 // The memory data store is a collection of useful functions we can include in our RtmClient
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
+
 // useful string funtions
 var S = require('string');
 var fs = require("fs");
 
-//Configuration settings\files
+//-------------------------------------------------------//
+
+//Configuration settings\files - not fully implemented - 
 //var config = require('/bin/config/config.json');
 
 //commands from json - currently unused - commands are currently inline
 //var help = require('./bin/commands.json');
 //var checkpoint = require('./bin/acocp.js');
 
-//sets slack tokens (multiple team support)
+//sets slack tokens (multiple team support - pending)
 var token1 = process.env.SLACK_API_TOKEN1 || '';
 var token2 = process.env.SLACK_API_TOKEN2 || '';
 
-
+//Other system vars
+var debugchan = process.env.SLACK_DEBUG1 || '';
 
 //Client 1
 var rtm1 = new RtmClient(token1,
@@ -41,9 +51,9 @@ var rtm1 = new RtmClient(token1,
 
 //Global var
 //IVIE Dev Channel 
-var DEV_SLACK_CHANNEL = 'G0UQBBM5Y';
-//CodeCollective Dev Channel
-var DEV_SLACK_CHANNEL2 = ''
+var DEV_SLACK_CHANNEL = 'G2HAS3H6U';
+//CodeCollective Dev Channel - Bot isn't connected to this yet
+var DEV_SLACK_CHANNEL2 = 'G0UQBBM5Y';
 
 
 rtm1.start();
@@ -58,8 +68,8 @@ rtm1.on(RTM_CLIENT_EVENTS.AUTHENTICATED, function (rtmStartData)
 // Function Notes: you need to wait for the client to fully connect before you can send messages
 rtm1.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function () 
 {
-  // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-  rtm1.sendMessage('Hello Agents, I am here to help.', DEV_SLACK_CHANNEL, function messageSent() 
+  // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
+  rtm1.sendMessage('Hello Agents, I am here to help.', debugchan, function messageSent() 
   {
     // optionally, you can supply a callback to execute once the message has been sent
   });
@@ -82,14 +92,14 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     //msgcommand[0] = !command 
     //msgcommand[1+] = command options
     
-    //commands are currently inline
+    //commands are currently inline. Plan is to point them to commands.json
     
     //help command
-    if (msgcommand === '!help')
+    if (msgcommand[0] === '!help')
       {
         channel_sent_from = message.channel;
-        // this sends a message to the channel identified by id 'G0UQBBM5Y' ivie-tech
-        rtm1.sendMessage('Currently No Commands Are Setup.', DEV_SLACK_CHANNEL, function messageSent() 
+        // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
+        rtm1.sendMessage('Type !help <command> to see more', DEV_SLACK_CHANNEL, function messageSent() 
         {
         // optionally, you can supply a callback to execute once the message has been sent
         });
@@ -97,14 +107,14 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
       }
     
     
-    //checkpoint - NOT IMPLAMENTED
+    //checkpoint - NOT IMPLEMENTED
     if (msgcommand[0] === '!cp')
       {
         channel_sent_from = message.channel;
         //CP FUNCTION GOES HERE
-        checkpoint_response=' Not Yet Implamented - please try https://septicycl.es/';    //checkpoint(message);
+        checkpoint_response=' Not Yet Implemented - please try https://septicycl.es/';    //checkpoint(message);
         //CP message sent to requested channel
-        rtm1.sendMessage('This was Sent from:' + channel_sent_from + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
+        rtm1.sendMessage('This was sent from:' + channel_sent_from + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
         {
         // optionally, you can supply a callback to execute once the message has been sent
         });
@@ -116,7 +126,7 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
 
 
 
-//disabling conlose messages for now
+//disabling console messages for now
 /*
 rtm.on(RTM_EVENTS.REACTION_ADDED, function handleRtmReactionAdded(reaction) {
   console.log('Reaction added:', reaction);
