@@ -30,7 +30,7 @@ var config = require('./bin/config/config.json');
 
 //commands from json - currently unused - commands are currently inline
 var help = require('./bin/commands.json');
-//var checkpoint = require('./bin/acocp.js');
+var checkpoint = require('./bin/acocp.js');
 
 //sets slack tokens (multiple team support - pending)
 var token1 = process.env.SLACK_API_TOKEN1 || '';
@@ -102,30 +102,27 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     }
     
     if (msgcommand[0] === '!help')
-      {
-        // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
-        rtm1.sendMessage('Type !help <command> to see more. (just kidding, this does nothing yet)', message.channel, function messageSent() 
-        {
-        // optionally, you can supply a callback to execute once the message has been sent
-        });
-      
-      }
+    {
+      // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
+      rtm1.sendMessage('Type !help <command> to see more. (just kidding, this does nothing yet)', message.channel, function messageSent() {});
+    }
     
     
     //checkpoint - NOT IMPLEMENTED
     if (msgcommand[0] === '!cp')
       {
         //CP FUNCTION GOES HERE
-        checkpoint_response=' Not Yet Implemented - please try https://septicycl.es/';    //checkpoint(message);
+        checkpoint_response = checkpoint(message);
+        //var user = MemoryDataStore.getUserById(message.user);
         //CP message sent to requested channel
-        rtm1.sendMessage('This was sent from:' + message.channel + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
+        rtm1.sendMessage(checkpoint_response, message.channel, function messageSent()
         {
         // optionally, you can supply a callback to execute once the message has been sent
         });
     }
   }
   
-    console.log('Message:', message);
+//    console.log('Message:', message);
 });
 
 

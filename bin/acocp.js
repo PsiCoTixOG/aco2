@@ -38,13 +38,11 @@
 //
 // !cp = next checkpoint + next 3(?)
 // !cp <Date(dd/mm/yy)> = checkpoints for that date
-// !cp <Date(dd/mm/yy)> <Time(hh:mm am||pm)> = next check point on date after time
 //
 //-----------------------------------------------------------------------------------//
 
 /* global module*/
-module.exports = function(message) 
-{
+module.exports = function(message) {
 
 	// Set the default timezone below. To see available timezones,
 	// see: http://momentjs.com/timezone/docs/#/data-loading/checking-if-a-zone-exists/
@@ -58,10 +56,6 @@ module.exports = function(message)
 	  	'central': 'America/Chicago','eastern': 'America/New_York', 'western': 'America/Los_Angeles'
 	    };
 
-	var channel_sent_from;
-	//sets the channel the message was sent from
-     channel_sent_from = message.channel;
-     
 	var checkpoints, cycles, hours, i, locale, moment, parsed, now, start, t, t0, timezone;
 
 		// moment is amazing
@@ -74,28 +68,18 @@ module.exports = function(message)
 //-------------IVIE NOTES --------------////
 //the message parsing needs to be reworked to handle the slack message object for us
 //removing "invalid message"
-		var S = require('string')
+		var S = require('string');
 		var parsedmessage = S(message.text);
-		
-		
-		
-		
-		
-		// parse user-provided date
-		if (msg.match[3]) {
-			parsed = Date.parse(msg.match[3]);
-			if (!parsed) {
-				msg.send('Invalid date');
-				return;
-			}
-			
-			
-			
-			t = new Date(parsed);
+		var command = parsedmessage.splitLeft(" ");
+		console.log(command[1]);
+		if (command[1]===''){
+		  parsed = Date.parse(command[1]);
+		  t = new Date(parsed);
 		} else {
 			// if no parameter, use the current date
 			t = new Date();
 		}
+		
 		t = t.getTime();
 		// get a starting point
 		t0 = new Date(1404918000000);  // July 9, 2014, 11:00 AM, EST
@@ -105,25 +89,23 @@ module.exports = function(message)
 		start = t0 + (cycles * 175 * 60 * 60 * 1000);
 		// calculate checkpoint times
 		checkpoints = [];
-		for (hours = 0; hours < 175; hours += 5) {
+		for (hours = 10; hours < 55; hours += 5) {
 			checkpoints.push(start + hours * 60 * 60 * 1000);
 		}
 		// current time
 		now = (new Date()).getTime();
 		// make it purdy
-		msg.send(checkpoints.map(function(t, i) {
+		return(checkpoints.map(function(t, i){
 			var line = '',
-				m = moment.tz(t, timezone);
-			if (now > t) {
+			m = moment.tz(t, timezone);
+			if (now > t){
 				// mark past checkpoints
-				line += '> ';
+				line += '~` ' + "*" + '   ' + m.format('ddd, MMM D, YYYY @ ha z') + " `~";
+			} else {
+		    line += '` ' + (i - 2) + '   ' + m.format('ddd, MMM D, YYYY @ ha z') + " `";
 			}
-			if (i < 9) {
-				line += ' ';
-			}
-			line += (i + 1);
-			line += '   ';
-			line += m.format('ddd, MMM D, YYYY @ ha z');
+			//line += '   ';
+			//line += m.format('ddd, MMM D, YYYY @ ha z');
 			return line;
 		}).join('\n'));
 	};
