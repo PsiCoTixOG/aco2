@@ -52,10 +52,10 @@ module.exports = function(message)
 	// easier for teams that span timezones.
 
 	var DEFAULT_LOCALE = 'en',
-	    DEFAULT_TIMEZONE = 'America/New_York',
+	    DEFAULT_TIMEZONE = 'America/Los_Angeles',
 	    TIMEZONE_SHORTCUTS = 
 	    {
-	  	'central': 'America/Chicago','eastern': 'America/New_York'
+	  	'central': 'America/Chicago','eastern': 'America/New_York', 'western': 'America/Los_Angeles'
 	    };
 
 	var channel_sent_from;
@@ -73,7 +73,13 @@ module.exports = function(message)
 
 //-------------IVIE NOTES --------------////
 //the message parsing needs to be reworked to handle the slack message object for us
-		var parsedmessage=S(message.text);
+//removing "invalid message"
+		var S = require('string')
+		var parsedmessage = S(message.text);
+		
+		
+		
+		
 		
 		// parse user-provided date
 		if (msg.match[3]) {
@@ -120,6 +126,4 @@ module.exports = function(message)
 			line += m.format('ddd, MMM D, YYYY @ ha z');
 			return line;
 		}).join('\n'));
-	});
-
-};
+	};

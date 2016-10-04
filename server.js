@@ -21,12 +21,12 @@ var MemoryDataStore = require('@slack/client').MemoryDataStore;
 
 // useful string funtions
 var S = require('string');
-var fs = require("fs");
+var fs = require('fs');
 
 //-------------------------------------------------------//
 
 //Configuration settings\files - not fully implemented - 
-//var config = require('/bin/config/config.json');
+var config = require('./bin/config/config.json');
 
 //commands from json - currently unused - commands are currently inline
 var help = require('./bin/commands.json');
@@ -82,11 +82,11 @@ rtm1.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, function ()
 rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) 
 {
   var checkpoint_response;
-  var channel_sent_from;
   var parsedmessage = S(message.text);
+  var iscommand = parsedmessage.startsWith("!");
   
-//  if (parsedmessage.startsWith("!"))
- // {
+  if (iscommand === true)
+  {
     var msgcommand = parsedmessage.splitLeft(" ");
     //msgcommand[0] = !command 
     //msgcommand[1+] = command options
@@ -94,13 +94,15 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     //commands are currently inline. Plan is to point them to commands.json
     
     //help command
-    if (msgcommand[0] === '!ping') {
-      channel_sent_from = message.channel;
+    
+    //Testing command
+    if (msgcommand[0] === '!ping') 
+    {
       rtm1.sendMessage('pong!', message.channel, function messageSent() {});
     }
+    
     if (msgcommand[0] === '!help')
       {
-        channel_sent_from = message.channel;
         // this sends a message to the channel identified by id 'G2HAS3H6U' ivie-dev
         rtm1.sendMessage('Type !help <command> to see more. (just kidding, this does nothing yet)', message.channel, function messageSent() 
         {
@@ -113,15 +115,14 @@ rtm1.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message)
     //checkpoint - NOT IMPLEMENTED
     if (msgcommand[0] === '!cp')
       {
-        channel_sent_from = message.channel;
         //CP FUNCTION GOES HERE
         checkpoint_response=' Not Yet Implemented - please try https://septicycl.es/';    //checkpoint(message);
         //CP message sent to requested channel
-        rtm1.sendMessage('This was sent from:' + channel_sent_from + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
+        rtm1.sendMessage('This was sent from:' + message.channel + ' ' + checkpoint_response, DEV_SLACK_CHANNEL, function messageSent()
         {
         // optionally, you can supply a callback to execute once the message has been sent
         });
-  //    }
+    }
   }
   
     console.log('Message:', message);
@@ -142,7 +143,7 @@ rtm.on(RTM_EVENTS.REACTION_REMOVED, function handleRtmReactionRemoved(reaction) 
 
 //
 //PsiCoTix - Left the chat server in as a 'local test' of the chat bot and as an admin interface
-
+//also cuz .. like website what???  this shits all new
 
 //
 // # SimpleServer
